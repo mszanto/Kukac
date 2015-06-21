@@ -36,10 +36,10 @@ namespace Kukac.kukac
             Kukac.types.Kukac kukacTeszt = new types.Kukac(Colors.Blue);
             data.add(kukacTeszt);
 
-            Mintai testAI = new Mintai();
-            testAI.initAdat((Adat)data);
-            testAI.initKukac(data.getKukac(1));
-            data.addAi(testAI, data.getKukacok()[1]);
+            MyAi myAI = new MyAi();
+            myAI.initAdat((Adat)data);
+            myAI.initKukac(data.getKukac(1));
+            data.addAi(myAI, data.getKukacok()[1]);
 
             
             Kaja kaja = new Kaja();
