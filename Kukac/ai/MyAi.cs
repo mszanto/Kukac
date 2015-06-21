@@ -21,24 +21,26 @@ namespace Kukac.ai
         {
             _adat = adat;
         }
+
         public void initKukac(Test kukac)
         {
             _kukac = kukac;
         }
+
         public enum Tengely
         {
             X,
             Y
         }
+
         public Iranyok setIrany()
         {
-            // kukac fejének pozíciója  
-            kukacFej = _kukac.getFej();
+            kukacFej = _kukac.getFej(); // kukac fejének pozíciója  
             etel = _adat.getEtel();
             Iranyok kukacIrany = _kukac.getIrany();
             Iranyok joIrany = kukacIrany;
 
-            #region Veszely elkerules
+            #region Jó irány kiválasztása
             if (kukacIrany == Iranyok.JOBB)
                 joIrany = JobbIranyuKukac();
             else if (kukacIrany == Iranyok.FEL)
@@ -47,9 +49,10 @@ namespace Kukac.ai
                 joIrany = BalIranyuKukac();
             else if (kukacIrany == Iranyok.LE)
                 joIrany = LeIranyuKukac();
-            #endregion Veszely elkerules
+            #endregion Jó irány kiválasztása                        
             return joIrany;
         }
+
         // A függvény visszaadja, hogy az adott koordinátán lévő pont a játék végét jelenti-e a kukac számára
         private bool IsThisPalyaElemHalaltOkoz(Point point)
         {
@@ -59,70 +62,78 @@ namespace Kukac.ai
             else return false;
         }
 
+        // Jobbra tartó kukac számára a megfelelő irány kiválasztása
         private Iranyok JobbIranyuKukac()
         {
+            Iranyok irany = Iranyok.JOBB; // Ha nincs veszély akkor ugyanarra folytathatja az útját
             var etelIrany = MerreVanAzEtel(Tengely.X);
             if (etelIrany != null && !IsThisPalyaElemHalaltOkoz(etelIrany.Item2))
-                return etelIrany.Item1;
-            // ha a kukac fejétől x irányban jobbra veszély van
+                irany = etelIrany.Item1;
+            // ha a kukac fejétől x tengelyen jobbra veszély van
             else if (IsThisPalyaElemHalaltOkoz(new Point(kukacFej.X + 1, kukacFej.Y)))
             {
                 if (!IsThisPalyaElemHalaltOkoz(new Point(kukacFej.X, kukacFej.Y - 1)))
-                    return Iranyok.FEL;                
-                else return Iranyok.LE;
-            }
-            // Ha nincs veszély akkor ugyanarra folytathatja az útját
-            else return Iranyok.JOBB;
+                    irany = Iranyok.FEL;                
+                else irany = Iranyok.LE;
+            }            
+            return irany;
         }
 
+        // Felfelé tartó kukac számára a megfelelő irány kiválasztása
         private Iranyok FelIranyuKukac()
-        {
+        {            
+            Iranyok irany = Iranyok.FEL; // Ha nincs veszély akkor ugyanarra folytathatja az útját
             var etelIrany = MerreVanAzEtel(Tengely.Y);
             if (etelIrany != null && !IsThisPalyaElemHalaltOkoz(etelIrany.Item2))
-                return etelIrany.Item1;
+                irany = etelIrany.Item1;
+            // ha a kukac fejétől y tengelyen felfelé veszély van
             else if (IsThisPalyaElemHalaltOkoz(new Point(kukacFej.X, kukacFej.Y - 1)))
             {
                 if (!IsThisPalyaElemHalaltOkoz(new Point(kukacFej.X + 1, kukacFej.Y)))
-                    return Iranyok.JOBB;                
-                else return Iranyok.BAL;                
-            }
-            // Ha nincs veszély akkor ugyanarra folytathatja az útját
-            else return Iranyok.FEL;
+                    irany = Iranyok.JOBB;                
+                else irany = Iranyok.BAL;                
+            }            
+            return irany;
         }
 
+        // Balra tartó kukac számára a megfelelő irány kiválasztása
         private Iranyok BalIranyuKukac()
         {
+            Iranyok irany = Iranyok.BAL; // Ha nincs veszély akkor ugyanarra folytathatja az útját
             var etelIrany = MerreVanAzEtel(Tengely.X);
             if (etelIrany != null && !IsThisPalyaElemHalaltOkoz(etelIrany.Item2))
-                return etelIrany.Item1;
+                irany = etelIrany.Item1;
+            // ha a kukac fejétől x tengelyen balra veszély van
             else if (IsThisPalyaElemHalaltOkoz(new Point(kukacFej.X - 1, kukacFej.Y)))
             {
                 if (!IsThisPalyaElemHalaltOkoz(new Point(kukacFej.X, kukacFej.Y - 1)))
-                    return Iranyok.FEL;
-                else return Iranyok.LE;
-            }
-            // Ha nincs veszély akkor ugyanarra folytathatja az útját
-            else return Iranyok.BAL;
+                    irany = Iranyok.FEL;
+                else irany = Iranyok.LE;
+            }            
+            return irany;
         }
 
+        // Lefelé tartó kukac számára a megfelelő irány kiválasztása
         private Iranyok LeIranyuKukac()
         {
+            Iranyok irany = Iranyok.LE; // Ha nincs veszély akkor ugyanarra folytathatja az útját
             var etelIrany = MerreVanAzEtel(Tengely.Y);
             if (etelIrany != null && !IsThisPalyaElemHalaltOkoz(etelIrany.Item2))
-                return etelIrany.Item1;
+                irany = etelIrany.Item1;
+            // ha a kukac fejétől y tengelyen lefelé veszély van
             else if (IsThisPalyaElemHalaltOkoz(new Point(kukacFej.X, kukacFej.Y + 1)))
             {
                 if (!IsThisPalyaElemHalaltOkoz(new Point(kukacFej.X + 1, kukacFej.Y)))
-                    return Iranyok.JOBB;
-                else return Iranyok.BAL;
-            }
-            // Ha nincs veszély akkor ugyanarra folytathatja az útját
-            else return Iranyok.LE;
+                    irany = Iranyok.JOBB;
+                else irany = Iranyok.BAL;
+            }            
+            return irany;
         }
         
         /* Visszaadja, hogy a kukac fejétől merre található az étel
          * param tengely -> meg kell adni, hogy melyik tengelyen mozog a kukac
          * null értékkel tér vissza ha változatlan az irány
+         * A függvény Tuple struktúrával tér vissza, mely tartalmazza az irányt (Iranyok) és az irány koordinátáit (Point)
          */
         private Tuple<Iranyok,Point> MerreVanAzEtel(Tengely tengely)
         {
@@ -146,8 +157,9 @@ namespace Kukac.ai
                         else return null;                        
                         break;
                     }
-            }
-            return null;
+                default:
+                    return null;
+            }            
         }
     }
 }
